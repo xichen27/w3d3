@@ -1,4 +1,6 @@
 require './QuestionsDatabase.rb'
+require './Reply.rb'
+require './QuestionFollower.rb'
 
 class Question
   
@@ -30,5 +32,41 @@ class Question
     
     hash = QuestionDatabase.instance.execute(query, id).first
     self.class.new(hash)
+  end
+  
+  def self.find_by_author_id(author_id)
+    query = <<-SQL
+    SELECT
+      *
+    FROM
+      questions
+    WHERE 
+      user_id = ?
+    SQL
+    
+    array = QuestionDatabase.instance.execute(query, author_id)
+    array.map! { |hash| self.class.new(hash) }
+  end
+  
+  def author
+    query = <<-SQL
+    SELECT
+      *
+    FROM
+      users
+    WHERE 
+      id = ?
+    SQL
+    
+    array = QuestionDatabase.instance.execute(query, user_id)
+    array.map! { |hash| self.class.new(hash) }
+  end
+  
+  def replies
+    Reply.find_by_question_id(id)
+  end
+  
+  def followers
+    QuestionFollower.followers_for_question_id(id)
   end
 end

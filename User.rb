@@ -1,4 +1,6 @@
 require './QuestionsDatabase.rb'
+require './Reply.rb'
+require './QuestionFollower.rb'
 
 class User
   def self.all
@@ -46,17 +48,7 @@ class User
   end
   
   def authored_questions
-    query = <<-SQL
-    SELECT
-      *
-    FROM 
-      questions
-    WHERE
-      user_id = ?
-    SQL
-    
-    array = QuestionDatabase.instance.execute(query, id)
-    array.map! { |hash| self.class.new(hash) }
+    Reply.find_by_user_id(id)
   end
   
   def authored_questions
@@ -71,6 +63,10 @@ class User
     
     array = QuestionDatabase.instance.execute(query, id)
     array.map! { |hash| self.class.new(hash) }
+  end
+  
+  def followed_questions
+    QuestionFollower.followed_questions_for_user_id(id)
   end
   
 end
