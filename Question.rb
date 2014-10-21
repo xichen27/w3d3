@@ -69,4 +69,9 @@ class Question
   def followers
     QuestionFollower.followers_for_question_id(id)
   end
+  
+  def self.most_followed(n)
+    QuestionFollower.most_followed_questions(n)
+  end
+    
 end
