@@ -1,4 +1,4 @@
-reqiure './QuestionsDatabase.rb'
+require './QuestionsDatabase.rb'
 
 class QuestionLike
   
@@ -84,6 +84,29 @@ class QuestionLike
     SQL
     
     array = QuestionDatabase.instance.execute(query, user_id)
+    array.map! { |hash| self.class.new(hash) }
+  end
+  
+  def self.most_liked_questions(n)
+    
+    query = <<-SQL
+    SELECT
+      *
+    FROM
+      questions 
+    WHERE id =
+    (SELECT
+      question_id
+    FROM
+       question_likes
+    GROUP BY
+      question_id)
+    ORDER BY
+      Count(user_id)
+    LIMIT ?)
+    SQL
+        
+    array = QuestionDatabase.instance.execute(query, n)
     array.map! { |hash| self.class.new(hash) }
   end
   

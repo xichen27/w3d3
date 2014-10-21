@@ -1,6 +1,7 @@
 require './QuestionsDatabase.rb'
 require './Reply.rb'
 require './QuestionFollower.rb'
+require './QuestionLike.rb'
 
 class User
   def self.all
@@ -28,7 +29,7 @@ class User
       id = ?
     SQL
     
-    hash = QuestionDatabase.instance.execute(query, id).first
+    hash = QuestionsDatabase.instance.execute(query, id).first
     self.class.new(hash)
   end
   
@@ -43,7 +44,7 @@ class User
       fname = ?
     SQL
     
-    array = QuestionDatabase.instance.execute(query, fname, lname)
+    array = QuestionsDatabase.instance.execute(query, fname, lname)
     array.map! { |hash| self.class.new(hash) }
   end
   
@@ -61,7 +62,7 @@ class User
       user_id = ?
     SQL
     
-    array = QuestionDatabase.instance.execute(query, id)
+    array = QuestionsDatabase.instance.execute(query, id)
     array.map! { |hash| self.class.new(hash) }
   end
   
@@ -69,4 +70,31 @@ class User
     QuestionFollower.followed_questions_for_user_id(id)
   end
   
+  def liked_questions
+    QuestionLike.liked_questions_for_user_id(id)
+  end
+  
+  def average_karma
+    query = <<-SQL
+    SELECT
+      SUM(likes_per_q) / CAST(COUNT(DISTINCT ques) AS FLOAT) 
+    FROM
+    (
+      SELECT
+        q.id ques, COUNT(ql.user_id) likes_per_q
+      FROM
+        questions q
+      LEFT OUTER JOIN
+        question_likes ql
+      ON
+        q.id = ql.question_id
+      WHERE 
+        q.user_id = ?
+      GROUP BY 
+        question_id
+    )  
+    SQL
+    
+    QuestionsDatabase.instance.execute(query, id)
+  end
 end
