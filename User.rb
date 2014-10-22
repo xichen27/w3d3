@@ -2,8 +2,11 @@ require './QuestionsDatabase.rb'
 require './Reply.rb'
 require './QuestionFollower.rb'
 require './QuestionLike.rb'
+require 'SaveModel'
 
 class User
+  
+  include SaveModel
   def self.all
     users = QuestionsDatabase.instance.execute('SELECT * FROM users')
     users.map {|user| User.new(user)}
@@ -16,6 +19,18 @@ class User
     @id = options['id']
     @fname = options['fname']
     @lname = options['lname']
+  end
+  
+  def table_name
+    'users'
+  end
+  
+  def var_name
+    'fname, lname'
+  end
+  
+  def question_marks
+    '?, ?'
   end
   
   def self.find_by_id(id)
@@ -98,3 +113,5 @@ class User
     QuestionsDatabase.instance.execute(query, id)
   end
 end
+
+

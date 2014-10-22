@@ -1,6 +1,11 @@
 require './QuestionsDatabase.rb'
+require './SaveModel.rb'
+
 
 class QuestionLike
+  
+  include SaveModel
+  
   
   def self.all
     questions_likes = QuestionsDatabase.instance.execute('SELECT * FROM questions_likes')
@@ -29,6 +34,18 @@ class QuestionLike
     
     hash = QuestionDatabase.instance.execute(query, id).first
     self.class.new(hash)
+  end
+  
+  def table_name
+    'question_likes'
+  end
+  
+  def var_name
+    'question_id, user_id'
+  end
+  
+  def question_marks
+    '?, ?'
   end
   
   def self.likers_for_question_id(question_id)
@@ -109,5 +126,7 @@ class QuestionLike
     array = QuestionDatabase.instance.execute(query, n)
     array.map! { |hash| self.class.new(hash) }
   end
+  
+  
   
 end
