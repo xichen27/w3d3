@@ -37,17 +37,6 @@ class Reply
     self.class.new(hash)
   end
   
-  def table_name
-    'replies'
-  end
-  
-  def var_name
-    'subject_question_id, parent_reply_id, body, user_id'
-  end
-  
-  def question_marks
-    '?, ?, ?, ?'
-  end
   
   def self.find_by_question_id(question_id)
     query = <<-SQL

@@ -21,18 +21,6 @@ class User
     @lname = options['lname']
   end
   
-  def table_name
-    'users'
-  end
-  
-  def var_name
-    'fname, lname'
-  end
-  
-  def question_marks
-    '?, ?'
-  end
-  
   def self.find_by_id(id)
     
     query = <<-SQL

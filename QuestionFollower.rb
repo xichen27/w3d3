@@ -34,18 +34,7 @@ class QuestionFollower
     hash = QuestionDatabase.instance.execute(query, id).first
     self.class.new(hash)
   end
-  
-  def table_name
-    'question_followers'
-  end
-  
-  def var_name
-    'question_id, user_id'
-  end
-  
-  def question_marks
-    '?, ?'
-  end
+
   
   def self.follower_for_question_id(question_id)
     

@@ -23,18 +23,6 @@ class Question
     @user_id = options['user_id']
   end
   
-  def table_name
-    'questions'
-  end
-  
-  def var_name
-    'title, body, user_id'
-  end
-  
-  def question_marks
-    '?, ?, ?'
-  end
-  
   def self.find_by_id(id)
     
     query = <<-SQL
